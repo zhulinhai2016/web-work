@@ -1,0 +1,388 @@
+@CHARSET "UTF-8";
+
+html, body {
+	width: 100%;
+	height: 100%;
+	margin: 0px;
+	padding: 0px;
+	box-sizing: border-box;
+}
+
+* {
+	font-size: 12px;
+}
+/*验证*/
+.input-check-error,.input-check-IPerror{
+	border-color:red!important;
+}
+/*验证*/
+
+.table {
+	display: table;
+	height: 100%;
+	box-sizing: border-box;
+}
+
+.table .row {
+	display: table-row;
+}
+
+.tr {
+	display: table-row;
+}
+
+.td {
+	display: table-cell;
+	vertical-align: top;
+}
+
+.frame-bottom {
+	width: 100%;
+	background: #e6e6e6;;
+}
+
+.frame-left {
+	width: 200px;
+	height: 130%;
+	background: #23262E;
+	padding-right:2px;
+}
+.menu {
+	width: 100%;
+	min-height: 10px;
+	margin-top: 1px;
+	/*border-bottom: 1px solid #4C6179;*/
+}
+
+.menu-title {
+	height: 35px;
+	line-height: 35px;
+	/*background: #636F7B;*/
+	text-align: left;
+	padding-left: 20px; 
+}
+
+.menu-title-active{
+	background: #4E5465 !important;
+	color:  !important;
+}
+
+.menu-title.menu-title-active::after{
+	transform: rotate(225deg)!important;
+	border-color:white !important;
+	margin-top:10px !important;
+}
+.menu-title.menu-title-active:hover::after{
+	border-color:white !important;
+	
+}
+
+.menu-title.menu-title-active:hover{
+	color:white  !important;;
+}
+
+
+.menu-item {
+	height: 30px;
+	line-height: 30px;
+	text-align: center;
+	/*background: #C0C0C0;*/
+	display: block;
+}
+
+.menu-item-active{
+	background: #56a9fe4d !important;
+	color: #3c9bfd !important;
+	border-left: 3px solid #3c9bfd !important;
+}
+/* .menu-item:hover {
+	background: #3c9bfd;
+	color:#fff;
+} */
+
+/*.menu-item:hover {
+	background: #fff;
+}
+
+.menu-item:active {
+	background: #fff;
+}*/
+
+/* .frame-top .top-iter{margin-left:500px; display:inline;border-right:1px solid gray;padding:0px 5px 0px 5px;}
+ */
+
+
+.classes-item {
+    display: inline-block;
+    margin: 20px;
+    padding: 0px;
+    border: 2px solid #d4d4d4;
+    background: url(../img/22.png) no-repeat;
+    width: 170px;
+    height: 247px;
+    width: inherit;
+    background-color: white;
+}
+
+.classes-item-view {
+	width: 160px;
+	display: table-cell;
+}
+
+.classes-item-top {
+	width: 100%;
+	height: 160px;
+	border-bottom: 1px solid #ccc;
+	display: inline-block;
+	text-align: center;
+	vertical-align: middle;
+	background: radial-gradient(white, #ddd);
+}
+
+.classes-item-middle {
+	width: 100%;
+	height: 50px;
+	border-bottom: 1px solid #ccc;
+}
+
+.classes-item-bottom {
+	width: 100%;
+	height: 30px;
+	height: 30px;
+	line-height: 26px;
+	padding: 2px;
+	box-sizing: border-box;
+	background: #0000ff;
+	color: #fff;
+}
+
+.classes-item-panel {
+	width: 160px;
+	height: 200px;
+	border-left: 1px solid #ccc;
+	display: table-cell;
+}
+
+.classes-item-top img {
+	width: 40%;
+	height: 40%;
+	text-align: center;
+	margin-top: 20%;
+}
+
+.classes-item-top object {
+	width: 100%;
+	height: 100%;
+}
+
+.classes-item-middle .table {
+	height: 100%;
+	width: 100%;
+	background: #f2f2f2;
+}
+
+.classes-item-middle .table .row .td {
+	padding: 5px;
+}
+
+.classes-item-middle .table .row .td img {
+	width: 100%;
+	height: 40px;
+}
+
+.classes-item-bottom button {
+	display: inline;
+	height: 100%;
+}
+
+.classes-item-bottom .title {
+	color: #0000ff;
+}
+
+.classes-item-panel .table {
+	height: 100%;
+	width: 100%;
+	vertical-align: middle;
+}
+
+.classes-item-panel .table .td {
+	vertical-align: middle;
+	padding: 1px;
+	border-bottom: 1px solid #ccc;
+}
+
+.classes-item-panel .table .td button {
+	margin: 2px 0px 2px 0px;
+}
+
+.classes-item-panel .table .row:last-child .td {
+	vertical-align: middle;
+	padding: 1px;
+	border-bottom: 0px;
+}
+
+.showBoxItem {
+	height: 100%;
+	border: 1px solid #000;
+}
+/* 
+.input-item {
+	width: 100%;
+	margin-left: 5px;
+	
+} */
+
+.int1{
+	margin-left: 70px;
+	
+}
+
+
+
+.input-item div:nth-child(2) {
+	display: inline-block;
+	width: 200px;
+	text-align: left;
+}
+
+.input-item select, .input-item input {
+	    width: 140px;
+    margin-left: 50px;
+    margin-top: -15;
+}
+
+.dev-item {
+	display: inline-block;
+	margin: 5px;
+	width: 45px !important;
+	height: 43px !important;
+	float: left;
+	position: absolute;
+}
+
+/* .dev-item img{width:50px !important;height:50px !important;} */
+.dev-itea img {
+	    width: 45px !important;
+    height: 43px !important;
+    margin-top: 50px;
+    margin-left: 18px;
+}
+
+.dev-ites img {
+	width: 45px !important;
+    height: 43px !important;
+    margin-left: 83px;
+    margin-top: -90px;
+}
+
+.dev-ited img {
+	    width: 45px !important;
+    height: 43px !important;
+    margin-left: 150px;
+    margin-top: -46px;
+}
+
+.dev-itef img {
+	width: 45px !important;
+    height: 43px !important;
+    margin-left: 150px;
+    margin-top: 25px;
+}
+
+.dev-iteg img {
+	width: 44px !important;
+    height: 44px !important;
+    margin-left: 18px;
+    margin-top: -45px;
+}
+
+.dev-iteh img {
+	    width: 45px !important;
+    height: 43px !important;
+    margin-left: 82px;
+    margin-top: -9px;
+}
+
+/**
+ * 顶部样式调整
+ */
+.m-frame-top {
+    width: 100%;
+    background: #1E9FFF;
+    box-sizing: border-box;
+    float: left;
+    position: relative;
+    padding-left: 370px;
+    padding-right: 100px;
+    height:50px;
+}
+
+
+.m-frame-top .m-fTop-left {
+	width: 370px;
+	float: left;
+	position: absolute;
+	left: 0;
+	top: 50%;
+	margin-top: -40px;
+}
+
+.m-frame-top .m-fTop-left .logo {
+	height: 80px;
+	position: relative;
+}
+
+.m-frame-top .m-fTop-left .logo .logo-title {
+	position: absolute;
+	left: 20px;
+	top: 20.9px;
+	height: 38.2px;
+	width: 280px;
+}
+
+.m-frame-top .m-fTop-left .logo .logo-bg {
+	width: 370px;
+	height: 80px;
+}
+
+.m-frame-top .m-fTop-center {
+	width: 100%;
+	
+}
+
+.m-frame-top .m-fTop-center .m-fTop-item {
+	float: right;
+	height: 60px;
+/* 	padding: 0px 5px;  */
+}
+
+
+.login-user{
+	position: absolute;
+	top: 15px;
+	right: 40px;
+}
+.login-user img:hover{
+	background: #2689d4;
+	color:#00ff80;
+}
+
+
+.lliks{
+	       font-size: 21px;
+    font-family: "微软雅黑";
+    margin-left: 5px;
+    color: white;
+    margin-top: -38px;
+
+}
+.llik{
+	    width: 200px;
+    height: 48px;
+    border-right: 1px solid #2689d4;
+    border-top: 1px solid #2689d4;
+    border-left: 1px solid #2689d4;
+    border-bottom: 1px solid #2689d4;
+    margin-top: 15px;
+    background-color: #2689d4;
+}

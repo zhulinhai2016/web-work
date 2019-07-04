@@ -1,0 +1,80 @@
+.firstWindow{
+    border: 1px dashed #408080;
+
+}
+.frame-left{
+	color: #fff;
+}
+.menu-title{
+		/*  border: 1px solid #ffffff; */
+        font-size: 15px;
+        margin-top: 5px;
+         background-color: #8497D4; 
+}
+.menu-item{
+	/*  border: 1px solid #000000; */
+        font-size: 15px;
+        margin-top: 5px;
+        background-color:#6085db;
+}
+.menu-item:hover{
+background-color:#3578ff;
+}
+    .input-item_p{
+        font-size:10px;
+        color: #444444;
+        /*border-bottom: 1px solid #727272;*/
+        /*float: left;*/
+    }
+    .input-item_inp{
+        border: 1px solid  #727272;
+        /*padding: 6px;*/
+        background-color: #cdc1bc;
+        outline: none;
+        /*float: left;*/
+    }
+    .addClassSubmit{
+       background-color: #727272;
+        border: none;
+        color: #fff;
+        border-radius: 5px;
+        outline: none;
+    }
+    .addBuildSubmit{
+        background-color: #727272;
+        border: none;
+        color: #fff;
+        border-radius: 5px;
+        outline: none;
+    }
+    .addFloorSubmit{
+      background-color: #727272;
+        border: none;
+        color: #fff;
+        border-radius: 5px;
+        outline: none;
+    }
+.clabel{
+   color: #ababab;
+    border-bottom: 1px solid #e6e6e6;
+}
+.clabel1{
+   color: #ffffff;
+    border-bottom: 1px solid #e6e6e6;
+    padding:5px;
+}
+.controls{
+    margin: 8px;
+    vertical-align:middle;
+}
+.dav{
+    background-color: #5CACEE;
+    color: #fff;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+}
+	
+.dav:hover{
+    color: #3A5FCD;
+}

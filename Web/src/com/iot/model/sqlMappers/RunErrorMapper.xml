@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.iot.dao.RunErrorMapper">
+  <resultMap id="BaseResultMap" type="com.iot.model.RunError">
+    <id column="RUN_ERROR_ID" jdbcType="DECIMAL" property="runErrorId" />
+    <result column="CLASS_ROOM_ID" jdbcType="DECIMAL" property="classRoomId" />
+    <result column="DEVICE_TYPE" jdbcType="VARCHAR" property="deviceType" />
+    <result column="ERROR_TYPE"  jdbcType="VARCHAR" property="errorType"  />
+    <result column="CREATE_YEAR" jdbcType="VARCHAR" property="createYear" />
+    <result column="CREATE_MONTH" jdbcType="DECIMAL" property="createMonth" />
+    <result column="CREATE_DATE" property="createDate" />
+    <result column="RECOVERY_TIME" property="recoveryTime" />
+    
+  </resultMap>
+  <resultMap id="dataResultMap" type="com.iot.model.RunErrorCountData">
+    <result column="CLASS_ROOM_ID" jdbcType="DECIMAL" property="classRoomId" />
+    <result column="DEVICE_TYPE" jdbcType="VARCHAR" property="deviceType" />
+     <result column="DEVICE_NAME" jdbcType="VARCHAR" property="deviceName" />
+    <result column="ERROR_TYPE"  jdbcType="VARCHAR" property="errorType"  />
+     <result column="ERROR_NAME" jdbcType="VARCHAR" property="errorName" />
+    <result column="CREATE_YEAR" jdbcType="VARCHAR" property="createYear" />
+    <result column="CREATE_MONTH" jdbcType="DECIMAL" property="createMonth" />
+    <result column="TIMES" jdbcType="DECIMAL" property="times" />
+  </resultMap>
+  
+  <resultMap id="pageDataMap" type="com.iot.model.RunErrorPage">
+    <id column="RUN_ERROR_ID" jdbcType="DECIMAL" property="runErrorId" />
+    <result column="CLASS_ROOM_ID" jdbcType="DECIMAL" property="classRoomId" />
+    <result column="DEVICE_NAME" jdbcType="VARCHAR" property="deviceName" />
+    <result column="DEVICE_TYPE" jdbcType="VARCHAR" property="deviceType" />
+    <result column="CLASS_NAME" jdbcType="VARCHAR" property="className" />
+    <result column="ERROR_TYPE"  jdbcType="VARCHAR" property="errorType"  />
+    <result column="CREATE_YEAR" jdbcType="VARCHAR" property="createYear" />
+    <result column="CREATE_MONTH" jdbcType="DECIMAL" property="createMonth" />
+    <result column="CREATE_DATE" property="createDate" />
+    <result column="RECOVERY_TIME" property="recoveryTime" />
+    <result column="ERROR_TIME" jdbcType="DECIMAL" property="errorTime" />
+  </resultMap>
+  
+  <insert id="saveRunError" parameterType="com.iot.model.RunError">
+  	<selectKey keyProperty="runErrorId" order="BEFORE" resultType="java.lang.Long">
+      SELECT RUN_ERROR_SEQ.nextval AS runErrorId FROM DUAL
+    </selectKey>
+    insert into RUN_ERROR (RUN_ERROR_ID, CLASS_ROOM_ID,
+    	<if test="deviceType!=null">
+    		DEVICE_TYPE,
+    	</if>
+    	<if test="errorType!=null">
+    		ERROR_TYPE,
+    	</if>
+    	<if test="createYear!=null">
+    		CREATE_YEAR,
+    	</if>
+    	<if test="createMonth!=null">
+    		CREATE_MONTH,
+    	</if>
+    	CREATE_DATE )
+    	values (
+    	#{runErrorId}, 
+    	#{classRoomId}, 
+    	<if test="deviceType!=null">
+    		#{deviceType}, 
+    	</if>
+    	<if test="errorType!=null">
+    		#{errorType},
+    	</if>
+    	<if test="createYear!=null">
+    		#{createYear},
+    	</if>
+    	<if test="createMonth!=null">
+    		#{createMonth},
+    	</if>
+    		#{createDate}
+      	)
+  </insert>
+  <select id="getErrorDataByInfo" parameterType="com.iot.model.RunError" resultMap="dataResultMap">
+  	select t.create_month ,
+       t.device_type,
+       decode(t.device_type,'1','中控','2','投影','3','空调','电箱') as device_name,
+       decode(t.error_type, '1', 1, '2', 1, 3) as error_type,
+       decode(decode(t.error_type, '1', 1, '2', 1, 3),1,'远程','断网') as error_name,
+       count(1) as times
+	from run_error t where 1=1  and t.create_year=#{createYear} 
+	<if test="deviceType!=null">
+		and t.device_type = #{deviceType}
+	</if>
+	<choose>
+		<when test='errorType!=null and errorType!="" and errorType=="1"'>
+			and (t.error_type = '1' or t.error_type = '2')
+		</when>
+		<when test='errorType!=null and errorType!="" and errorType=="3"'>
+			and (t.error_type = '3')
+		</when>
+	</choose>
+	
+	<if test="classRoomId!=null">
+		and t.class_room_id = #{classRoomId}
+	</if>
+	
+	group by t.create_month,
+	         t.device_type,
+	         decode(t.error_type, '1', 1, '2', 1, 3)
+	order by t.create_month
+  
+  </select>
+  
+  <select id="findByRunError" parameterType="com.iot.model.RunError" resultMap="BaseResultMap">
+  	select * from  RUN_ERROR where 1=1 
+    	<if test="deviceType!=null">
+    		and DEVICE_TYPE=#{deviceType}
+    	</if>
+    	<if test="errorType!=null">
+    		and ERROR_TYPE=#{errorType}
+    	</if>
+    	<if test="createYear!=null">
+    		and CREATE_YEAR=#{createYear}
+    	</if>
+    	<if test="createMonth!=null">
+    		and CREATE_MONTH=#{createMonth}
+    	</if>
+    	<if test="createDate!=null">
+    		and CREATE_DATE=#{createDate}
+    	</if>
+    	<if test="classRoomId!=null">
+    		and CLASS_ROOM_ID=#{classRoomId}
+    	</if>
+  		order by RUN_ERROR_ID asc
+  </select>
+  
+  <update id="updateByRunError" parameterType="com.iot.model.RunError">
+  	update RUN_ERROR set ERROR_TYPE='3'
+  	where 1=1 and ERROR_TYPE='5' and DEVICE_TYPE =#{deviceType} and CLASS_ROOM_ID=#{classRoomId}
+  </update>
+    <update id="updateByRunError2" parameterType="com.iot.model.RunError">
+  	update RUN_ERROR set ERROR_TYPE = '3' 
+  	<if test="recoveryTime!=null">
+  		RECOVERY_TIME=#{recoveryTime}
+  	</if> 
+  	where 1=1 and ERROR_TYPE='3' and DEVICE_TYPE =#{deviceType} and CLASS_ROOM_ID=#{classRoomId}
+  </update>
+  <delete id="deleteByRunError" parameterType="com.iot.model.RunError">
+  	delete from RUN_ERROR where 1=1
+  		<if test="deviceType!=null">
+    		and DEVICE_TYPE=#{deviceType}
+    	</if>
+    	<if test="errorType!=null">
+    		and ERROR_TYPE=#{errorType}
+    	</if>
+    	<if test="createYear!=null">
+    		and CREATE_YEAR=#{createYear}
+    	</if>
+    	<if test="createMonth!=null">
+    		and CREATE_MONTH=#{createMonth}
+    	</if>
+    	<if test="createDate!=null">
+    		and CREATE_DATE=#{createDate}
+    	</if>
+    	<if test="classRoomId!=null">
+    		and CLASS_ROOM_ID=#{classRoomId}
+    	</if>
+  </delete>
+  
+ <select id="selectTotal" parameterType="com.iot.model.RunError" resultType="java.lang.Integer">
+ 	 select count(1) as total from 
+	    (select t1.run_error_id,t1.class_room_id,t1.create_year,t1.create_month,t1.create_date,t1.recovery_time,t2.name as class_name,
+	        t2.name || '-' || decode(t1.device_type,'1','中控','2','投影','3','空调','电箱')  as device_name,
+	        decode(t1.device_type,'1','中控','2','投影','3','空调','电箱') as device_type ,
+	        decode(t1.error_type,'3','断网') as error_type,
+	        (decode(t1.recovery_time,null,sysdate,t1.recovery_time ) - t1.create_date)*24 as errorTime
+	        from run_error t1 inner join classroom t2 on t1.class_room_id = t2.id 
+	        where t1.device_type in ('1','4')
+	     ) a
+       where 1=1 
+       <if test="deviceName != null">
+       	and a.device_name like #{deviceName}
+       </if>
+       <if test="createDate != null">
+       	and a.create_date &gt;= #{createDate}  
+       </if>
+       <if test="recoveryTime != null">
+       	and a.create_date &lt;= #{recoveryTime} 
+       </if>
+         order by a.run_error_id desc
+ </select>
+ <select id="findPage" parameterType="com.iot.model.RunError" resultMap="pageDataMap">
+	select c.* from 
+	    (select b.*,rownum rwn from   
+	       ( select a.* from 
+	        (select t1.run_error_id,t1.class_room_id,t1.create_year,t1.create_month,t1.create_date,t1.recovery_time,t2.name as class_name,
+	        t2.name || '-' || decode(t1.device_type,'1','中控','2','投影','3','空调','电箱')  as device_name,
+	        decode(t1.device_type,'1','中控','2','投影','3','空调','电箱') as device_type ,
+	        decode(t1.error_type,'3','断网') as error_type,
+	        (decode(t1.recovery_time,null,sysdate,t1.recovery_time ) - t1.create_date)*24 as errorTime
+	        from run_error t1 inner join classroom t2 on t1.class_room_id = t2.id 
+	        where t1.device_type in ('1','4')) a
+	       where 1=1 
+	       <if test="deviceName != null">
+	       	and a.device_name like #{deviceName}
+	       </if>
+	       <if test="createDate != null">
+	       	and a.create_date &gt;= #{createDate}  
+	       </if>
+	       <if test="recoveryTime != null">
+	       	and a.create_date &lt;= #{recoveryTime} 
+	       </if>
+	         order by a.run_error_id desc) b
+	    where rownum &lt;= #{offset}*#{limit} ) c 
+	where c.rwn &gt; (#{offset}-1)*#{limit} 
+ </select>
+</mapper>

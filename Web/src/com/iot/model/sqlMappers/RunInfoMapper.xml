@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.iot.dao.RunInfoMapper">
+  <resultMap id="BaseResultMap" type="com.iot.model.RunInfo">
+    <id column="RUN_INFO_ID" jdbcType="DECIMAL" property="runInfoId" />
+    <result column="CLASS_ROOM_ID" jdbcType="DECIMAL" property="classRoomId" />
+    <result column="DEVICE_TYPE" jdbcType="VARCHAR" property="deviceType" />
+    <result column="OPEN_TIME" jdbcType="DATE" property="openTime" />
+    <result column="CLOSE_TIME"  property="closeTime" />
+    <result column="IS_OPENED" jdbcType="VARCHAR" property="isOpened" />
+    <result column="IS_CLOSED" jdbcType="VARCHAR" property="isClosed" />
+    <result column="CREATE_DATE" property="createDate" />
+    <result column="UPDATE_DATE"  property="updateDate" />
+  </resultMap>
+   <resultMap id="dataMap" type="com.iot.model.RunCountData">
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="value" jdbcType="DECIMAL" property="value" />
+  </resultMap>
+  <resultMap id="dataMap2" type="com.iot.model.HomeCountData">
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="value" jdbcType="DECIMAL" property="value" />
+  </resultMap>
+  <insert id="saveRunInfo" parameterType="com.iot.model.RunInfo">
+  	<selectKey keyProperty="runInfoId" order="BEFORE" resultType="java.lang.Long">
+      SELECT RUN_INFO_SEQ.nextval AS runInfoId FROM DUAL
+    </selectKey>
+    insert into RUN_INFO (RUN_INFO_ID, CLASS_ROOM_ID,
+    	<if test="deviceType!=null">
+    		DEVICE_TYPE,
+    	</if>
+    	<if test="openTime!=null">
+    		OPEN_TIME,
+    	</if>
+    	<if test="closeTime!=null">
+    		CLOSE_TIME,
+    	</if>
+    	<if test="isOpened!=null">
+    		IS_OPENED,
+    	</if>
+    	<if test="isClosed!=null">
+    		IS_CLOSED,
+    	</if>
+    	<if test="updateDate!=null">
+    		UPDATE_DATE,
+    	</if>
+    	CREATE_DATE )
+    	values (
+    	#{runInfoId}, 
+    	#{classRoomId}, 
+    	<if test="deviceType!=null">
+    		#{deviceType}, 
+    	</if>
+    	<if test="openTime!=null">
+    		#{openTime}, 
+    	</if>
+    	<if test="closeTime!=null">
+    		#{closeTime}, 
+    	</if>
+    	<if test="isOpened!=null">
+    		#{isOpened}, 
+    	</if>
+    	<if test="isClosed!=null">
+    		#{isClosed}, 
+    	</if>
+    	<if test="updateDate!=null">
+    		#{updateDate},
+    	</if>
+    		#{createDate}
+      	)
+  </insert>
+  
+  <update id="updateById" parameterType="com.iot.model.RunInfo">
+  	update RUN_INFO set 
+  		UPDATE_DATE=#{updateDate}
+  		<if test="deviceType!=null">
+    		,DEVICE_TYPE=#{deviceType}
+    	</if>
+  		<if test="openTime!=null">
+    		,OPEN_TIME=#{openTime}
+    	</if>
+    	<if test="closeTime!=null">
+    		,CLOSE_TIME=#{closeTime}
+    	</if>
+    	<if test="isOpened!=null">
+    		,IS_OPENED=#{isOpened}
+    	</if>
+    	<if test="isClosed!=null">
+    		,IS_CLOSED=#{isClosed}
+    	</if>
+    	 where 1=1 and RUN_INFO_ID=#{runInfoId}
+  </update>
+  
+  <select id="findToOpenOrClose" parameterType="com.iot.model.RunInfo" resultMap="BaseResultMap">
+	  	select t.* from run_info t where 1=1 
+	  	<if test="deviceType!=null">
+	  		and t.device_type = #{deviceType} 
+	  	</if>
+	  	<if test="classRoomId!=null">
+	  		and t.class_room_id = #{classRoomId} 
+	  	</if>
+	  	 and t.is_opened = '1' and (t.is_closed !='1' or t.is_closed is null)
+  </select>
+  
+  <select id="runDataCount" parameterType="com.iot.model.RunInfo" resultMap="dataMap">
+  	select case t.device_type when '1' then '中控' when '2' then '投影' else '空调' end as "name" ,
+  	sum(( decode(t.close_time,null,sysdate,t.close_time )-t.open_time)*24*60) as "value" from RUN_INFO t 
+		where 1=1 and t.device_type in('1','2','3')
+		<if test="openTime!=null">
+			and t.open_time &gt; #{openTime} 
+		</if>
+		<if test="closeTime!=null">
+			and t.open_time &lt; #{closeTime}
+		</if>
+		<if test="classRoomId!=null">
+			and t.class_room_id=#{classRoomId}
+		</if>
+		group by t.device_type  order by t.device_type asc
+  </select>
+  
+   <select id="powerDataCount" parameterType="com.iot.model.RunInfo" resultMap="dataMap">
+  	select case t.device_type when '1' then '中控' when '2' then '投影' else '空调' end as "name" ,
+  		sum((decode(t.close_time,null,sysdate,t.close_time )-t.open_time)*24*t1.power_num/1000) as "value" from RUN_INFO t 
+  		left join device_power t1 on t.device_type = t1.device_type
+		where 1=1 and t.device_type in('1','2','3')
+		<if test="openTime!=null">
+			and t.open_time &gt; #{openTime} 
+		</if>
+		<if test="closeTime!=null">
+			and t.open_time &lt; #{closeTime}
+		</if>
+		group by t.device_type  order by t.device_type asc
+  </select>
+  
+  <select id="findNewestData" parameterType="com.iot.model.RunInfo" resultMap="BaseResultMap">
+  	select t2.* from run_info t2 where t2.run_info_id in (select max(t.run_info_id) from run_info t 
+  	where 1=1 
+  	<if test="classRoomId!=null">
+  		and t.class_room_id = #{classRoomId}
+  	</if>
+  	group by t.device_type )
+  </select>
+  
+  <!-- 获取在用设备统计数量 -->
+  <select id="getUseOrNotUseData" parameterType="com.iot.model.RunInfo" resultMap="dataMap2">
+  	select t1.device_type as "name", count(t1.device_type) as "value"  from run_info t1 
+	where 1=1 
+	<if test="openTime!=null">
+		and t1.open_time &gt; #{openTime} 
+	</if>
+	<if test="closeTime!=null">
+		and t1.open_time &lt; #{closeTime}
+	</if>
+	and t1.is_opened='1'  and t1.is_closed is null
+	group by t1.device_type
+  </select>
+  
+   <!-- 获取教室使用时长排名数据 -->
+  <select id="getClassRoomRankings" parameterType="com.iot.model.RunInfo" resultMap="dataMap">
+  	select nvl(t2.name,'null') as "name",
+    nvl(sum(( decode(t.close_time,null,sysdate,t.close_time )-t.open_time)*24*60),0) as "value" from classroom t2 left join RUN_INFO t  on t.class_room_id=t2.id
+    where 1=1 
+	<if test="openTime!=null">
+		and t.open_time &gt; #{openTime} 
+	</if>
+	<if test="closeTime!=null">
+		and t.open_time &lt; #{closeTime}
+	</if>
+	  group by t2.id,t2.name order by "value" desc
+  </select>
+  
+    <!-- 获取设备使用时长排名数据 -->
+  <select id="getDeviceRankings" parameterType="com.iot.model.RunInfo" resultMap="dataMap">
+  	select  case t.device_type when '1' then '中控' when '2' then '投影' else '空调' end as "name" ,
+    sum(( decode(t.close_time,null,sysdate,t.close_time )-t.open_time)*24*60) as "value" from RUN_INFO t 
+    where 1=1 and t.device_type in('1','2','3')
+	<if test="openTime!=null">
+		and t.open_time &gt; #{openTime} 
+	</if>
+	<if test="closeTime!=null">
+		and t.open_time &lt; #{closeTime}
+	</if>
+	<if test="classRoomId!=null">
+  		and t.class_room_id = #{classRoomId}
+  	</if>
+	  group by t.device_type  order by t.device_type asc
+  </select>
+
+</mapper>

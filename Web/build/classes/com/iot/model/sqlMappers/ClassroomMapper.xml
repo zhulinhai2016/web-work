@@ -1,0 +1,338 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.iot.dao.ClassroomMapper">
+  <resultMap id="BaseResultMap" type="com.iot.model.Classroom">
+    <id column="ID" jdbcType="DECIMAL" property="id" />
+    <result column="NAME" jdbcType="VARCHAR" property="name" />
+    <result column="CLASS_IP" jdbcType="VARCHAR" property="classIp" />
+    <result column="CLASS_CENTER_IP" jdbcType="VARCHAR" property="classCenterIp" />
+    <result column="CLASS_ID" jdbcType="VARCHAR" property="classId" />
+    <result column="CLASS_TOUY" jdbcType="VARCHAR" property="classTouy" />
+    <result column="BUILD_ID" jdbcType="DECIMAL" property="buildId" />
+    <result column="FLOOR_ID" jdbcType="DECIMAL" property="floorId" />
+    <result column="TOUYTYPE" jdbcType="VARCHAR" property="touytype" />
+    <result column="KONGTYPE" jdbcType="VARCHAR" property="kongtype" />
+    <result column="VERSION_NUM" jdbcType="VARCHAR" property="versionNum" />
+    
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    ID, NAME, CLASS_IP, CLASS_CENTER_IP, CLASS_ID, CLASS_TOUY, BUILD_ID, FLOOR_ID, TOUYTYPE, 
+    KONGTYPE,VERSION_NUM
+  </sql>
+  <select id="selectByExample" parameterType="com.iot.model.ClassroomExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    'true' as QUERYID,
+    <include refid="Base_Column_List" />
+    from CLASSROOM
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+       order by name
+  
+    
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from CLASSROOM
+    where ID = #{id,jdbcType=DECIMAL}
+  </select>
+  <select id="selectByName" parameterType="com.iot.model.ClassroomExample" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from CLASSROOM
+    where NAME = #{name,jdbcType=DECIMAL}
+ </select>
+ <!--  <select id="selectByIP" parameterType="com.iot.model.ClassroomExample" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from CLASSROOM
+    where CLASS_IP = #{IP,jdbcType=DECIMAL} 
+    or CLASS_CENTER_IP =#{IP,jdbcType=DECIMAL} 
+    or CLASS_CENTER_IP =#{IP,jdbcType=DECIMAL}
+  </select> -->
+  <select id="selectByIP" parameterType="com.iot.model.ClassroomExample" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from CLASSROOM
+    where CLASS_IP = #{IP,jdbcType=DECIMAL} 
+    or CLASS_CENTER_IP =#{IP,jdbcType=DECIMAL} 
+    or CLASS_TOUY =#{IP,jdbcType=DECIMAL}
+  </select>
+  
+  <select id="checkedByIP" parameterType="com.iot.model.Classroom" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from CLASSROOM
+    where 1=1 
+    <if test="classId != null">
+        and  CLASS_ID !=#{classId}
+    </if>
+    <if test="id != null">
+        and  ID !=#{id}
+    </if>
+     and ( CLASS_IP = #{classIp,jdbcType=DECIMAL} 
+    	or CLASS_CENTER_IP =#{classIp,jdbcType=DECIMAL} 
+    	or CLASS_TOUY =#{classIp,jdbcType=DECIMAL} )
+  </select>
+  
+  
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from CLASSROOM
+    where ID = #{id,jdbcType=DECIMAL}
+    
+  </delete>
+  <delete id="deleteByExample" parameterType="com.iot.model.ClassroomExample">
+    delete from CLASSROOM
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.iot.model.Classroom">
+    <selectKey keyProperty="id" order="BEFORE" resultType="java.lang.Long">
+      SELECT CLASSROOM_SEQ.nextval AS id FROM DUAL
+    </selectKey>
+    insert into CLASSROOM (ID, NAME, CLASS_IP, 
+      CLASS_CENTER_IP, CLASS_ID, CLASS_TOUY, 
+      BUILD_ID, FLOOR_ID, TOUYTYPE, 
+      KONGTYPE)
+    values (#{id,jdbcType=DECIMAL}, #{name,jdbcType=VARCHAR}, #{classIp,jdbcType=VARCHAR}, 
+      #{classCenterIp,jdbcType=VARCHAR}, #{classId,jdbcType=VARCHAR}, #{classTouy,jdbcType=VARCHAR}, 
+      #{buildId,jdbcType=DECIMAL}, #{floorId,jdbcType=DECIMAL}, #{touytype,jdbcType=VARCHAR}, 
+      #{kongtype,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.iot.model.Classroom">
+    <selectKey keyProperty="id" order="BEFORE" resultType="java.lang.Long">
+      SELECT CLASSROOM_SEQ.nextval AS id FROM DUAL
+    </selectKey>
+    insert into CLASSROOM
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      ID,
+      <if test="name != null">
+        NAME,
+      </if>
+      <if test="classIp != null">
+        CLASS_IP,
+      </if>
+      <if test="classCenterIp != null">
+        CLASS_CENTER_IP,
+      </if>
+      <if test="classId != null">
+        CLASS_ID,
+      </if>
+      <if test="classTouy != null">
+        CLASS_TOUY,
+      </if>
+      <if test="buildId != null">
+        BUILD_ID,
+      </if>
+      <if test="floorId != null">
+        FLOOR_ID,
+      </if>
+      <if test="touytype != null">
+        TOUYTYPE,
+      </if>
+      <if test="kongtype != null">
+        KONGTYPE,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      #{id,jdbcType=DECIMAL},
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="classIp != null">
+        #{classIp,jdbcType=VARCHAR},
+      </if>
+      <if test="classCenterIp != null">
+        #{classCenterIp,jdbcType=VARCHAR},
+      </if>
+      <if test="classId != null">
+        #{classId,jdbcType=VARCHAR},
+      </if>
+      <if test="classTouy != null">
+        #{classTouy,jdbcType=VARCHAR},
+      </if>
+      <if test="buildId != null">
+        #{buildId,jdbcType=DECIMAL},
+      </if>
+      <if test="floorId != null">
+        #{floorId,jdbcType=DECIMAL},
+      </if>
+      <if test="touytype != null">
+        #{touytype,jdbcType=VARCHAR},
+      </if>
+      <if test="kongtype != null">
+        #{kongtype,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.iot.model.ClassroomExample" resultType="java.lang.Long">
+    select count(*) from CLASSROOM
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update CLASSROOM
+    <set>
+      <if test="record.id != null">
+        ID = #{record.id,jdbcType=DECIMAL},
+      </if>
+      <if test="record.name != null">
+        NAME = #{record.name,jdbcType=VARCHAR},
+      </if>
+      <if test="record.classIp != null">
+        CLASS_IP = #{record.classIp,jdbcType=VARCHAR},
+      </if>
+      <if test="record.classCenterIp != null">
+        CLASS_CENTER_IP = #{record.classCenterIp,jdbcType=VARCHAR},
+      </if>
+      <if test="record.classId != null">
+        CLASS_ID = #{record.classId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.classTouy != null">
+        CLASS_TOUY = #{record.classTouy,jdbcType=VARCHAR},
+      </if>
+      <if test="record.buildId != null">
+        BUILD_ID = #{record.buildId,jdbcType=DECIMAL},
+      </if>
+      <if test="record.floorId != null">
+        FLOOR_ID = #{record.floorId,jdbcType=DECIMAL},
+      </if>
+      <if test="record.touytype != null">
+        TOUYTYPE = #{record.touytype,jdbcType=VARCHAR},
+      </if>
+      <if test="record.kongtype != null">
+        KONGTYPE = #{record.kongtype,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update CLASSROOM
+    set ID = #{record.id,jdbcType=DECIMAL},
+      NAME = #{record.name,jdbcType=VARCHAR},
+      CLASS_IP = #{record.classIp,jdbcType=VARCHAR},
+      CLASS_CENTER_IP = #{record.classCenterIp,jdbcType=VARCHAR},
+      CLASS_ID = #{record.classId,jdbcType=VARCHAR},
+      CLASS_TOUY = #{record.classTouy,jdbcType=VARCHAR},
+      BUILD_ID = #{record.buildId,jdbcType=DECIMAL},
+      FLOOR_ID = #{record.floorId,jdbcType=DECIMAL},
+      TOUYTYPE = #{record.touytype,jdbcType=VARCHAR},
+      KONGTYPE = #{record.kongtype,jdbcType=VARCHAR}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.iot.model.Classroom">
+    update CLASSROOM
+    <set>
+      <if test="name != null">
+        NAME = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="classIp != null">
+        CLASS_IP = #{classIp,jdbcType=VARCHAR},
+      </if>
+      <if test="classCenterIp != null">
+        CLASS_CENTER_IP = #{classCenterIp,jdbcType=VARCHAR},
+      </if>
+      <if test="classId != null">
+        CLASS_ID = #{classId,jdbcType=VARCHAR},
+      </if>
+      <if test="classTouy != null">
+        CLASS_TOUY = #{classTouy,jdbcType=VARCHAR},
+      </if>
+      <if test="buildId != null">
+        BUILD_ID = #{buildId,jdbcType=DECIMAL},
+      </if>
+      <if test="floorId != null">
+        FLOOR_ID = #{floorId,jdbcType=DECIMAL},
+      </if>
+      <if test="touytype != null">
+        TOUYTYPE = #{touytype,jdbcType=VARCHAR},
+      </if>
+      <if test="kongtype != null">
+        KONGTYPE = #{kongtype,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=DECIMAL}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.iot.model.Classroom">
+    update CLASSROOM
+    set NAME = #{name,jdbcType=VARCHAR},
+      CLASS_IP = #{classIp,jdbcType=VARCHAR},
+      CLASS_CENTER_IP = #{classCenterIp,jdbcType=VARCHAR},
+      CLASS_ID = #{classId,jdbcType=VARCHAR},
+      CLASS_TOUY = #{classTouy,jdbcType=VARCHAR},
+      BUILD_ID = #{buildId,jdbcType=DECIMAL},
+      FLOOR_ID = #{floorId,jdbcType=DECIMAL},
+      TOUYTYPE = #{touytype,jdbcType=VARCHAR},
+      KONGTYPE = #{kongtype,jdbcType=VARCHAR}
+    where ID = #{id,jdbcType=DECIMAL}
+  </update>
+</mapper>
